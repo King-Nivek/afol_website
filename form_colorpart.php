@@ -1,10 +1,33 @@
+<?php
+require 'resources/includes/include.global.php';
+
+  //check to see if they're logged in
+  if(!isset($_SESSION['logged_in'])) {
+    header("Location: form_sign-in.php");
+  }
+  
+  $uTool = new UserTools();
+  
+  //get the user object from the session
+  $userID = $_SESSION["userID"];
+  if ($userID == "") {
+    echo "Lost userID SESSION variable...<br>";
+    $uTool->logout();
+    header("Location: form_sign-in.php");
+  }
+  $user = $uTool->get($userID);
+  $toID = "";
+  $toUser = null;
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Part Form</title>
+    <title>ColorPart Form</title>
 
     <!-- Bootstrap -->
     <link href="libraries/custom/custom-bootstrap.css" rel="stylesheet">
@@ -36,7 +59,7 @@
                 <div class="panel panel-primary">                             <!-- Register Panel -->
 
                   <div class="panel-heading">
-                    <h3 class="panel-title">Form: Parts</h3>
+                    <h3 class="panel-title">Form: ColorPart</h3>
                   </div>
 
                   <div class="panel-body">                                    <!-- Register Body -->
@@ -47,21 +70,15 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Part Category</label>
+                        <label for="inputEmail3" class="col-sm-2 control-label">Color ID</label>
                         <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputPassword3" placeholder="Part Category">
+                          <input type="text" class="form-control" id="inputPassword3" placeholder="Color ID">
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-2 control-label">Part Size</label>
+                        <label for="inputPassword3" class="col-sm-2 control-label">ColorPart Quantity</label>
                         <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputEmail3" placeholder="Part Size">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-2 control-label">Part Description</label>
-                        <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputEmail3" placeholder="Part Description">
+                          <input type="email" class="form-control" id="inputEmail3" placeholder="ColorPart Quantity">
                         </div>
                       </div>
                       <div class="form-group">
@@ -85,13 +102,13 @@
                     Menu <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="forms.html">Forms</a></li>
-                    <li><a href="reports.html">Reports</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="forms.php">Forms</a></li>
+                    <li><a href="reports.php">Reports</a></li>
                     <li class="divider"></li>
-                    <li><a href="form_settings.html">Settings</a></li>
+                    <li><a href="form_settings.php">Settings</a></li>
                     <li class="divider"></li>
-                    <li><a href="index.html">Sign-out</a></li>
+                    <li><a href="logout.php">Sign-out</a></li>
                   </ul>
                 </div>
                 
@@ -104,27 +121,27 @@
                 
                 <!-- Sets -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_sets.html" role="button">Sets</a>
+                  <a class="btn btn-default" href="form_sets.php" role="button">Sets</a>
                 </div>
                 
                 <!-- Colors -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_parts.html" role="button">Parts</a>
+                  <a class="btn btn-default" href="form_parts.php" role="button">Parts</a>
                 </div>
                 
                 <!-- Parts -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_colors.html" role="button">Colors</a>
+                  <a class="btn btn-default" href="form_colors.php" role="button">Colors</a>
                 </div>
                 
                 <!-- ColorParts -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_colorpart.html" role="button">ColorParts</a>
+                  <a class="btn btn-default" href="form_colorpart.php" role="button">ColorParts</a>
                 </div>
                 
                 <!-- SetParts -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_setpart.html" role="button">SetParts</a>
+                  <a class="btn btn-default" href="form_setpart.php" role="button">SetParts</a>
                 </div>
 
               </div><!--======================================================== End sidebar menu items    -->

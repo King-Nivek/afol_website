@@ -1,3 +1,26 @@
+<?php
+require 'resources/includes/include.global.php';
+
+  //check to see if they're logged in
+  if(!isset($_SESSION['logged_in'])) {
+    header("Location: form_sign-in.php");
+  }
+  
+  $uTool = new UserTools();
+  
+  //get the user object from the session
+  $userID = $_SESSION["userID"];
+  if ($userID == "") {
+    echo "Lost userID SESSION variable...<br>";
+    $uTool->logout();
+    header("Location: form_sign-in.php");
+  }
+  $user = $uTool->get($userID);
+  $toID = "";
+  $toUser = null;
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -46,13 +69,13 @@
                     Menu <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="forms.html">Forms</a></li>
-                    <li><a href="reports.html">Reports</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="forms.php">Forms</a></li>
+                    <li><a href="reports.php">Reports</a></li>
                     <li class="divider"></li>
-                    <li><a href="form_settings.html">Settings</a></li>
+                    <li><a href="form_settings.php">Settings</a></li>
                     <li class="divider"></li>
-                    <li><a href="index.html">Sign-out</a></li>
+                    <li><a href="logout.php">Sign-out</a></li>
                   </ul>
                 </div>
                 
