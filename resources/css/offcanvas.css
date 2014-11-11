@@ -7,9 +7,10 @@ body {
   overflow-x: hidden; /* Prevent scroll on narrow devices */
   overflow-y: visible;
 }
+
 body {
   padding-top: 10px;
-  background-color: #4E4E4E;
+  /*background-color: #4E4E4E;*/
 }
 footer {
   padding: 10px 0;
