@@ -30,3 +30,4 @@ _ReSharper*/
 *.sublime-workspace
 *.sublime-project
 Desktop.ini
+sftp-config.json

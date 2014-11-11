@@ -1,10 +1,35 @@
+<?php
+require 'resources/includes/include.global.php';
+
+  //check to see if they're logged in
+  if(!isset($_SESSION['logged_in'])) {
+    header("Location: form_sign-in.php");
+  }
+  
+  $uTool = new UserTools();
+  
+  //get the user object from the session
+  $userID = $_SESSION["userID"];
+  if ($userID == "") {
+    echo "Lost userID SESSION variable...<br>";
+    $uTool->logout();
+    header("Location: form_sign-in.php");
+  }
+  $user = $uTool->get($userID);
+  $toID = "";
+  $toUser = null;
+
+// print_r($_SESSION);
+$user = unserialize($_SESSION['user']);
+// print_r($user);
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Color Form</title>
+    <title>Home</title>
 
     <!-- Bootstrap -->
     <link href="libraries/custom/custom-bootstrap.css" rel="stylesheet">
@@ -31,88 +56,50 @@
             </p>
 
             <div class="well">
-              <form class="form-horizontal" role="form">                      <!-- form -->
-                
-                <div class="panel panel-primary">                             <!-- Register Panel -->
-
-                  <div class="panel-heading">
-                    <h3 class="panel-title">Form: Colors</h3>
-                  </div>
-
-                  <div class="panel-body">                                    <!-- Register Body -->
-                      <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Color ID</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputPassword3" placeholder="Color ID">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Color Name</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputPassword3" placeholder="Color Name">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                          <button type="submit" class="btn btn-default">Submit</button>
-                        </div>
-                      </div>
-                  </div><!-- / Register Body -->
-                </div><!-- / Register Panel -->
-              </form>
+              <h3>Welcome
+              <?php echo " $user->userName!"; ?></h3>
+              <p>Adult Fans of Lego Rejoice for your bricks are going to be tracked very soon.</p>
             </div>
+
           </div><!--============================================================ End column 1  -->
         
           <div class="col-xs-2 col-sm-2 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
             <div class="well">
               <div class="btn-group-vertical"><!--  sidebar menu items  -->
-                      
+                
                 <!-- Main Menu -->
                 <div class="btn-group">
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     Menu <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="forms.html">Forms</a></li>
-                    <li><a href="reports.html">Reports</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="forms.php">Forms</a></li>
+                    <li><a href="reports.php">Reports</a></li>
                     <li class="divider"></li>
-                    <li><a href="form_settings.html">Settings</a></li>
+                    <li><a href="form_settings.php">Settings</a></li>
                     <li class="divider"></li>
-                    <li><a href="index.html">Sign-out</a></li>
+                    <li><a href="logout.php">Sign-out</a></li>
                   </ul>
                 </div>
                 
                 <!-- Page Label -->
                 <div class="h3" style="margin-top: 10px;">
-                  <span class="label label-default center-block">Forms</span>
+                  <span class="label label-default center-block">Home</span>
                 </div>
                 
                 <div  style="padding-top: 10px;"></div>
                 
-                <!-- Sets -->
+                <!-- Sign-in -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_sets.html" role="button">Sets</a>
+                  <a class="btn btn-default" href="form_sign-in.php" role="button">Sign-in</a>
                 </div>
-                
-                <!-- Colors -->
+
+                <div  style="padding-top: 10px;"></div>
+
+                <!-- Register -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_parts.html" role="button">Parts</a>
-                </div>
-                
-                <!-- Parts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_colors.html" role="button">Colors</a>
-                </div>
-                
-                <!-- ColorParts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_colorpart.html" role="button">ColorParts</a>
-                </div>
-                
-                <!-- SetParts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_setpart.html" role="button">SetParts</a>
+                  <a class="btn btn-default" href="form_register.php" role="button">Register</a>
                 </div>
 
               </div><!--======================================================== End sidebar menu items    -->

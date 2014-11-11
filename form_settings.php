@@ -1,10 +1,33 @@
+<?php
+require 'resources/includes/include.global.php';
+
+  //check to see if they're logged in
+  if(!isset($_SESSION['logged_in'])) {
+    header("Location: form_sign-in.php");
+  }
+  
+  $uTool = new UserTools();
+  
+  //get the user object from the session
+  $userID = $_SESSION["userID"];
+  if ($userID == "") {
+    echo "Lost userID SESSION variable...<br>";
+    $uTool->logout();
+    header("Location: form_sign-in.php");
+  }
+  $user = $uTool->get($userID);
+  $toID = "";
+  $toUser = null;
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign-in</title>
+    <title>Settings</title>
 
     <!-- Bootstrap -->
     <link href="libraries/custom/custom-bootstrap.css" rel="stylesheet">
@@ -31,85 +54,46 @@
             </p>
 
             <div class="well">
-                
-              <!-- Page Label -->
-              <div class="h4" style="margin-top: 10px;">
-                <span class="label label-default">Sign-in</span>
-              </div>
-
-              <form class="form-horizontal" role="form">
-                <div class="form-group">
-                  <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
-                  <div class="col-sm-10">
-                    <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-                  <div class="col-sm-10">
-                    <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-sm-offset-2 col-sm-10">
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox"> Remember me
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-default">Sign in</button>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-sm-offset-9 col-sm-3">
-                    <a class="btn btn-default" href="form_forgot.html" role="button">Forgot Password</a>
-                  </div>
-                </div>
-              </form>
+                <p>Page Main Content</p>
             </div>
-
           </div><!--============================================================ End column 1  -->
         
           <div class="col-xs-2 col-sm-2 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
-            <div class="well">
+            
               <div class="btn-group-vertical"><!--  sidebar menu items  -->
-                      
+                <div class="well">      
                 <!-- Main Menu -->
                 <div class="btn-group">
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     Menu <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="forms.html">Forms</a></li>
-                    <li><a href="reports.html">Reports</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="forms.php">Forms</a></li>
+                    <li><a href="reports.php">Reports</a></li>
                     <li class="divider"></li>
-                    <li><a href="form_settings.html">Settings</a></li>
+                    <li><a href="form_settings.php">Settings</a></li>
                     <li class="divider"></li>
-                    <li><a href="index.html">Sign-out</a></li>
+                    <li><a href="logout.php">Sign-out</a></li>
                   </ul>
                 </div>
                 
                 <!-- Page Label -->
                 <div class="h3" style="margin-top: 10px;">
-                  <span class="label label-default center-block">Sign-in</span>
+                  <span class="label label-default center-block">Settings</span>
                 </div>
                 
                 <div  style="padding-top: 10px;"></div>
                 
-                <!-- Sign-in -->
+                <!-- Clear all -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_sign-in.html" role="button">Sign-in</a>
+                  <button type="button" class="btn btn-warning">Clear All</button>
                 </div>
                 <div  style="padding-top: 10px;"></div>
                 
-                <!-- Register -->
+                <!-- Submit -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_register.html" role="button">Register</a>
+                  <button type="button" class="btn btn-success">Submit</button>
                 </div>
 
               </div><!--======================================================== End sidebar menu items    -->
