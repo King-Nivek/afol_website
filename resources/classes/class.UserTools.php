@@ -1,6 +1,7 @@
 <?php
   require_once 'class.User.php';
   require_once 'class.DB.php';
+  require_once 'libraries/password_compat/password.php';
   
   class UserTools {
     
@@ -13,20 +14,22 @@
     public function login($email, $password) {
       global $db;
 
-      $hashpass = md5($password);
       $result = $db->mysqli->query("SELECT * 
                                       FROM User
-                                      WHERE user_email = '$email' 
-                                        AND user_password = '$hashpass'");
+                                      WHERE user_email = '$email'");
 
       if($result->num_rows == 1) {
-        $loggedUser = new User($result->fetch_assoc());
-        $_SESSION["user"] = serialize($loggedUser);
-        $_SESSION["userID"] = $loggedUser->id;
-        $_SESSION["login_time"] = time();
-        $_SESSION["logged_in"] = 1;
-        return true;
-      
+        $row = $result->fetch_assoc();
+        if(password_verify($password, $row['user_password'])) {
+          $loggedUser = new User($row);
+          $_SESSION["user"] = serialize($loggedUser);
+          $_SESSION["userID"] = $loggedUser->id;
+          $_SESSION["login_time"] = time();
+          $_SESSION["logged_in"] = 1;
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
