@@ -2,6 +2,7 @@
   //include.global.php
 
   //start the session
+  date_default_timezone_set('America/Virgin');
   session_name("afol");
   session_start();
 
