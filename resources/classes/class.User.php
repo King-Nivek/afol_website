@@ -72,7 +72,7 @@
                       "user_email"     => "'$email'",
                       "user_firstName" => "'$firstName'",
                       "user_lastName"  => "'$lastName'",
-                      "user_joinDate"  => "'".date("Y-m-d H:i:s",time())."'"
+                      "user_joinDate"  => "'".date("Y-m-d H:i:s")."'"
                       );
 
         $this->id = $db->insert('User', $data);
