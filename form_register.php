@@ -3,7 +3,8 @@
   // Register a user in the system to allow them
   // to login.
   //
-  require 'resources/includes/include.global.php';
+  require_once 'resources/includes/include.global.php';
+  require_once 'libraries/password_compat/password.php';
 
 /*  //check to see if they're logged in
   if(!isset($_SESSION['logged_in'])) {
@@ -85,7 +86,7 @@
     {
       //prep the data for saving in a new user object
       $data['user_username'] = $username;
-      $data['user_password'] = md5($password); //encrypt the password for storage
+      $data['user_password'] = password_hash($password, PASSWORD_BCRYPT); //encrypt the password for storage
       $data['user_email'] = $email;
       $data['user_firstName'] = $firstName;
       $data['user_lastName'] = $lastName;
