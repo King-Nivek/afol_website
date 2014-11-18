@@ -1,5 +1,6 @@
 <?php
 require 'resources/includes/include.global.php';
+require_once 'resources/classes/class.FormField.php';
 
   //check to see if they're logged in
   if(!isset($_SESSION['logged_in'])) {
@@ -18,6 +19,46 @@ require 'resources/includes/include.global.php';
   $user = $uTool->get($userID);
   $toID = "";
   $toUser = null;
+
+  $field_setID = new FormField();
+  $field_setID->label_text = 'Set ID';
+  $field_setID->id = 'setID';
+  $field_setID->name = 'setID';
+  $field_setID->placeholder = '70702-1';
+  $field_setID->tooltip_text = 'Please enter the Lego Set number.';
+
+  $field_setName = new FormField();
+  $field_setName->label_text = 'Set Name';
+  $field_setName->id = 'setName';
+  $field_setName->name = 'setName';
+  $field_setName->placeholder = 'Warp Stinger';
+  $field_setName->tooltip_text = 'Please enter the Lego Set name.';
+
+  $field_setTheme = new FormField();
+  $field_setTheme->label_text = 'Set Theme';
+  $field_setTheme->id = 'setTheme';
+  $field_setTheme->name = 'setTheme';
+  $field_setTheme->placeholder = 'Galaxy Squad';
+  $field_setTheme->tooltip_text = 'Please enter the Lego Set Theme name.';
+  
+  // print_r($_POST['keys']);
+  if($_SERVER["REQUEST_METHOD"] == "POST") {
+    // echo "in server<br>\n";
+    if(isset($_POST['keys'])) {
+      // echo "in post<br>\n";
+      $posted_keys = $_POST['keys'];
+      $posted_keys = substr_replace($posted_keys,"}",-2);
+      $posted_keys = str_replace("'",'"',$posted_keys);
+      $posted_keys = json_decode($posted_keys);
+      // print_r($posted_keys);
+      $results = $db->select("Lego_Set","*","set_id='$posted_keys->set_id'");
+      // print_r($results);
+      $field_setID->value = $results['set_id'];
+      $field_setName->value = $results['set_name'];
+      $field_setTheme->value = $results['set_category'];
+
+    }
+  }
 
 ?>
 
@@ -54,46 +95,36 @@ require 'resources/includes/include.global.php';
             </p>
 
             <div class="well">
-              <form class="form-horizontal" role="form">                      <!-- form -->
+              <form class="form-horizontal" role="form">
                 
-                <div class="panel panel-primary">                             <!-- Register Panel -->
+                <div class="panel panel-primary">
 
                   <div class="panel-heading">
                     <h3 class="panel-title">Form: Sets</h3>
                   </div>
 
-                  <div class="panel-body">                                    <!-- Register Body -->
+                  <div class="panel-body">
+                    <?php 
+                      echo $field_setID->printField(),"\n",
+                           $field_setName->printField(),"\n",
+                           $field_setTheme->printField(),"\n"; 
+                    ?>
                     <div class="form-group">
-                      <label for="inputEmail3" class="col-sm-2 control-label">Set ID</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputPassword3" placeholder="Set ID">
+                      <div class="col-sm-offset-3 col-sm-9">
+                        <button type="button"
+                                name="submit"
+                                value="modify" 
+                                class="btn btn-default"
+                        >Modify</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button"
+                                name="submit"
+                                value="delete" 
+                                class="btn btn-danger"
+                        >Delete</button>
                       </div>
                     </div>
-                    <div class="form-group">
-                      <label for="inputEmail3" class="col-sm-2 control-label">Set Name</label>
-                      <div class="col-sm-10">
-                        <input type="text" class="form-control" id="inputPassword3" placeholder="Set Name">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-2 control-label">Set Theme</label>
-                      <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="Set Theme">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="inputPassword3" class="col-sm-2 control-label">Set Quantity</label>
-                      <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="Set Quantity">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">Submit</button>
-                      </div>
-                    </div>
-                  </div><!-- / Register Body -->
-                </div><!-- / Register Panel -->
+                  </div>
+                </div><!-- End panel  -->
               </form>
             </div>
           </div><!--============================================================ End column 1  -->
@@ -127,29 +158,29 @@ require 'resources/includes/include.global.php';
                 
                 <!-- Sets -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_sets.php" role="button">Sets</a>
+                  <a class="btn btn-default" href="forms.php" role="button">Forms Home</a>
                 </div>
-                
-                <!-- Colors -->
+                <!-- 
+                <!-- Colors - ->
                 <div class="btn-group">
                   <a class="btn btn-default" href="form_parts.php" role="button">Parts</a>
                 </div>
                 
-                <!-- Parts -->
+                <!-- Parts - ->
                 <div class="btn-group">
                   <a class="btn btn-default" href="form_colors.php" role="button">Colors</a>
                 </div>
                 
-                <!-- ColorParts -->
+                <!-- ColorParts - ->
                 <div class="btn-group">
                   <a class="btn btn-default" href="form_colorpart.php" role="button">ColorParts</a>
                 </div>
                 
-                <!-- SetParts -->
+                <!-- SetParts - ->
                 <div class="btn-group">
                   <a class="btn btn-default" href="form_setpart.php" role="button">SetParts</a>
                 </div>
-
+ -->
               </div><!--======================================================== End sidebar menu items    -->
             </div><!--========================================================== End well                  -->
           </div><!--============================================================ End column 2              -->
@@ -162,5 +193,10 @@ require 'resources/includes/include.global.php';
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="libraries/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="resources/js/offcanvas.js"></script>
+    <script>
+      $(function () { 
+        $("[data-toggle='tooltip']").tooltip(); 
+      });
+    </script>
   </body>
 </html>
