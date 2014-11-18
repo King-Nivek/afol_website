@@ -1,28 +1,31 @@
 <?php
 require 'resources/includes/include.global.php';
+require_once 'resources/classes/class.TableTools.php';
 
-  //check to see if they're logged in
-  if(!isset($_SESSION['logged_in'])) {
-    header("Location: form_sign-in.php");
-  }
-  
-  $uTool = new UserTools();
-  
-  //get the user object from the session
-  $userID = $_SESSION["userID"];
-  if ($userID == "") {
-    echo "Lost userID SESSION variable...<br>";
-    $uTool->logout();
-    header("Location: form_sign-in.php");
-  }
-  $user = $uTool->get($userID);
-  
-  // This function is only available to administrators.
-  if ($user->privilage != 'A') {
-    header("Location: form_sign-in.php");
-  }
-  $toID = "";
-  $toUser = null;
+
+//check to see if they're logged in
+if(!isset($_SESSION['logged_in'])) {
+  header("Location: form_sign-in.php");
+}
+
+$uTool = new UserTools();
+
+//get the user object from the session
+$userID = $_SESSION["userID"];
+if ($userID == "") {
+  echo "Lost userID SESSION variable...<br>";
+  $uTool->logout();
+  header("Location: form_sign-in.php");
+}
+$user = $uTool->get($userID);
+/*
+// This function is only available to administrators.
+if ($user->privilage != 'A') {
+  header("Location: form_sign-in.php");
+}
+*/
+$toID = "";
+$toUser = null;
 
 ?>
 
@@ -59,7 +62,14 @@ require 'resources/includes/include.global.php';
             </p>
 
             <div class="well">
-              <p>Page Main Content</p>
+              <div id="tableRecords">
+               <p>Choose a Record Listing from the Left.</p>
+              </div>
+
+              <form id="form_type" action="" method="POST">
+                <input id="keys" type="hidden" name="keys" value="keys">
+              </form>
+
             </div>
 
           </div><!--============================================================ End column 1  -->
@@ -93,27 +103,27 @@ require 'resources/includes/include.global.php';
 
                 <!-- Sets -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_sets.php" role="button">Sets</a>
+                  <button class="btn btn-default" name="tableType" value="Lego_Set" id="bttn_sets" role="button">Sets</button>
                 </div>
 
                 <!-- Colors -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_parts.php" role="button">Parts</a>
+                  <button class="btn btn-default" name="tableType" value="Lego_Part" id="bttn_parts" role="button">Parts</button>
                 </div>
 
                 <!-- Parts -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_colors.php" role="button">Colors</a>
+                  <button class="btn btn-default" name="tableType" value="Lego_Color" id="bttn_color" role="button">Colors</button>
                 </div>
 
                 <!-- ColorParts -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_colorpart.php" role="button">ColorParts</a>
+                  <button class="btn btn-default" name="tableType" value="Lego_ColorPart" id="bttn_colorPart" role="button">ColorParts</button>
                 </div>
 
                 <!-- SetParts -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_setpart.php" role="button">SetParts</a>
+                  <button class="btn btn-default" name="tableType" value="Lego_SetPart" id="bttn_setPart" role="button">SetParts</button>
                 </div>
 
               </div><!--======================================================== End sidebar menu items    -->
@@ -124,9 +134,79 @@ require 'resources/includes/include.global.php';
     </div><!--================================================================== End container             -->
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="libraries/jquery/jquery.min.js"></script>
+    <script src="libraries/jquery/jquery.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="libraries/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="libraries/bootstrap/dist/js/bootstrap.js"></script>
     <script src="resources/js/offcanvas.js"></script>
+    
+    <script>
+      $(function() {
+
+   /*     //  Ajax Function  
+        $("button[name='tableType']").click(function(){
+          $.post("resources/php/formsHelper.php", {
+            tableType: $(this).val()
+          },
+          function(data,status){
+            $("#tableRecords").html(data);
+          });
+          $('td:has(span)').on({
+            mouseenter: function() {
+              $(this).css('background-color','#d9534f');
+            },
+            mouseleave: function() {
+              $(this).css('background-color','#fff');
+            }
+          });
+        });// End Ajax Function*/
+
+        //  Modified example from "http://learn.jquery.com/ajax/jquery-ajax-methods/"
+        $("button[name='tableType']").click(function(){
+          // Using the core $.ajax() method
+          $.ajax({
+          // the URL for the request
+          url: "resources/php/formsHelper.php",
+          // the data to send (will be converted to a query string)
+          data: {
+            tableType: $(this).val()
+          },
+          // whether this is a POST or GET request
+          type: "POST",
+          // the type of data we expect back
+          dataType : "json",
+          // code to run if the request succeeds;
+          // the response is passed to the function
+          success: function( data ) {
+            // console.log(data);
+            $("#tableRecords").html(data['html']);
+            $('#form_type').attr('action', data.form_type.toString());
+          },
+          // code to run if the request fails; the raw request and
+          // status codes are passed to the function
+          error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+          },
+          // code to run regardless of success or failure
+          complete: function( xhr ) {
+            // console.log(typeof(xhr.responseJSON.form_type));
+            /*$('tr.data-row > td:first-child').click(function(xhr) {
+              //  Go to delete page and set values to selected row
+            });*/
+            $('tr.data-row > td:gt(0)').click(function(data) {
+              //  Go to modify page and set values to selected row
+              $('#keys').val($(this).parent().data('key'));
+              // console.log($('#keys').val());
+              $('#form_type').submit();
+            });
+          }
+          });
+        });
+        
+
+      });
+    </script>
   </body>
 </html>
