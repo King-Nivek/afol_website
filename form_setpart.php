@@ -19,6 +19,19 @@ require 'resources/includes/include.global.php';
   $toID = "";
   $toUser = null;
 
+  
+  if($_SERVER["REQUEST_METHOD"] == "POST") {
+    echo "in server<br>\n";
+    if(isset($_POST['keys'])) {
+      echo "in post<br>\n";
+      $posted_keys = $_POST['keys'];
+      $posted_keys = substr_replace($posted_keys,"}",-2);
+      $posted_keys = str_replace("'",'"',$posted_keys);
+      $posted_keys = json_decode($posted_keys);
+      print_r($posted_keys);
+
+    }
+  }
 ?>
 
 <!DOCTYPE html>
