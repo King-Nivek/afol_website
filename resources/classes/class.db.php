@@ -64,11 +64,17 @@
     //  Parameter(s):  
     //  Returns:  
     //
-    public function select($table, $fields, $where) {
-      $sql = "SELECT   $fields
-                FROM   $table 
-                WHERE  $where";
-
+    public function select($table, $fields = "*", $where = "", $fullQuery = "") {
+      if($fullQuery != "") {
+        $sql = $fullQuery;
+      } elseif ($where == "") {
+        $sql = "SELECT   $fields
+                  FROM   $table";
+      } else {
+        $sql = "SELECT   $fields
+                  FROM   $table 
+                  WHERE  $where";
+      }
       $result = $this->mysqli->query($sql);
 
       if($this->mysqli->errno) {
