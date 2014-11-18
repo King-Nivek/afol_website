@@ -64,3 +64,29 @@ footer {
     width: 50%; /* 6 columns */
   }
 }
+
+/*.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+  background-color: #f5f5f5;
+}
+.table .table {
+  background-color: #ffffff;
+}*/
+
+/*  
+Add red background to the 'X' remove icon when the user hovers over the 'X'.
+Also changes the color of the 'X' to white.
+  */
+tr.data-row > td:first-child:hover{
+  background-color: #d9534f;
+  color: #fff; 
+}
+/*
+Returns the 'X' to a gray color.
+*/
+tr.data-row > td:first-child{
+  color:#626262;
+}
+tr.data-row > td{
+  cursor: pointer;
+}
