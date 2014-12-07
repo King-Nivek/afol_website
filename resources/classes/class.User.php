@@ -29,7 +29,7 @@
     //
     function __construct($data) {
       $this->id        =              (isset($data['user_id']))        ? $data['user_id']        : "" ;
-      $this->userName  = stripslashes((isset($data['user_username']))  ? $data['user_username']  : "");
+      $this->username  = stripslashes((isset($data['user_username']))  ? $data['user_username']  : "");
       $this->privilage =              (isset($data['user_privilege'])) ? $data['user_privilege'] : "" ;
       $this->hashpass  =              (isset($data['user_password']))  ? $data['user_password']  : "" ;
       $this->email     = stripslashes((isset($data['user_email']))     ? $data['user_email']     : "");
@@ -47,7 +47,7 @@
     public function save($isNewUser = false) {
       //  Create a new database object.
       $db = new DB();
-      $userName  = $db->mysqli->real_escape_string($this->userName  );
+      $username  = $db->mysqli->real_escape_string($this->username  );
       $email     = $db->mysqli->real_escape_string($this->email     );
       $firstName = $db->mysqli->real_escape_string($this->firstName );
       $lastName  = $db->mysqli->real_escape_string($this->lastName  );
@@ -55,11 +55,11 @@
       //  If just modifying a current user.
       if(!$isNewUser) {
         //  set the data array
-        $data = array("user_userName"  => "'$userName'",
-                      "user_password"  => "'$this->hashpass'",
-                      "user_email"     => "'$email'",
-                      "user_firstName" => "'$firstName'",
-                      "user_lastName"  => "'$lastName'"
+        $data = array("user_username"  => "$username",
+                      "user_password"  => "$this->hashpass",
+                      "user_email"     => "$email",
+                      "user_firstName" => "$firstName",
+                      "user_lastName"  => "$lastName"
                       );
         //  Modify the user in the database
         $db->modify('User', $data, "'id = $this->id'");
@@ -67,12 +67,12 @@
       } else {
         //  If this is a new user being registered.
         $data = array("user_id"  => "NULL",
-                      "user_userName"  => "'$userName'",
-                      "user_password"  => "'$this->hashpass'",
-                      "user_email"     => "'$email'",
-                      "user_firstName" => "'$firstName'",
-                      "user_lastName"  => "'$lastName'",
-                      "user_joinDate"  => "'".date("Y-m-d H:i:s",time())."'"
+                      "user_username"  => "$username",
+                      "user_password"  => "$this->hashpass",
+                      "user_email"     => "$email",
+                      "user_firstName" => "$firstName",
+                      "user_lastName"  => "$lastName",
+                      "user_joinDate"  => "".date("Y-m-d H:i:s")
                       );
 
         $this->id = $db->insert('User', $data);

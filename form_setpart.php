@@ -1,5 +1,10 @@
 <?php
 require 'resources/includes/include.global.php';
+require_once 'resources/classes/class.FormField.php';
+require_once 'resources/classes/class.FormDropDown.php';
+require_once 'resources/includes/include.htmlFormButtons.php';
+require_once 'resources/php/validationTools.php';
+require_once 'resources/php/inputValid.php';
 
   //check to see if they're logged in
   if(!isset($_SESSION['logged_in'])) {
@@ -15,107 +20,183 @@ require 'resources/includes/include.global.php';
     $uTool->logout();
     header("Location: form_sign-in.php");
   }
+
   $user = $uTool->get($userID);
   $toID = "";
   $toUser = null;
 
-?>
+  $field_setID = new FormDropDown();
+  $field_setID->table = 'Lego_SetPart';
+  $field_setID->field = 'set_id';
+  $field_setID->label_text = 'Set Name';
+  $field_setID->id = 'setID';
+  $field_setID->name = 'setID';
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SetPart Form</title>
+  $field_partID = new FormDropDown();
+  $field_partID->table = 'Lego_SetPart';
+  $field_partID->field = 'part_id';
+  $field_partID->label_text = 'Part ID';
+  $field_partID->id = 'partID';
+  $field_partID->name = 'partID';
 
-    <!-- Bootstrap -->
-    <link href="libraries/custom/custom-bootstrap.css" rel="stylesheet">
+  $field_colorID = new FormDropDown();
+  $field_colorID->table = 'Lego_SetPart';
+  $field_colorID->field = 'color_id';
+  $field_colorID->label_text = 'Color ID';
+  $field_colorID->id = 'colorID';
+  $field_colorID->name = 'colorID';
 
-    <!-- Custom styles for this template -->
-    <link href="resources/css/offcanvas.css" rel="stylesheet">
+  $field_setPartQty = new FormField();
+  $field_setPartQty->table = 'Lego_SetPart';
+  $field_setPartQty->field = 'setPart_qty';
+  $field_setPartQty->label_text = 'SetPart Quantity';
+  $field_setPartQty->id = 'setPart_qty';
+  $field_setPartQty->name = 'setPart_qty';
+  $field_setPartQty->placeholder = '14';
+  $field_setPartQty->maxlength = 4;
+  $field_setPartQty->tooltip_text = 'Please enter the Quantity of this part.';
+  
+  $formButtons = '';
+  $submitType = 'false';
+  $validInput = 0;
+  $originalKeys = array();
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="container">
-      <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-10">
-          
-          <div class="col-xs-10 col-sm-10 "><!--  column 1  -->
+  $keys = array();
+  $keys[] = &$field_setID;
+  $keys[] = &$field_partID;
+  $keys[] = &$field_colorID;
 
-            <p class="pull-right visible-xs">
-              <button type="button" class="btn btn-warning btn-xs" data-toggle="offcanvas">Toggle nav</button>
-            </p>
+  if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-            <div class="well">
-              <form class="form-horizontal" role="form">                      <!-- form -->
-                
-                <div class="panel panel-primary">                             <!-- Register Panel -->
-                  <div class="panel-heading">
-                    <h3 class="panel-title">Form: SetPart</h3>
-                  </div>
-                  <div class="panel-body">                                    <!-- Register Body -->
-                      <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Set ID</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputPassword3" placeholder="Set ID">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Color ID</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputPassword3" placeholder="Color ID">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-2 control-label">Part ID</label>
-                        <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputEmail3" placeholder="Part ID">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-2 control-label">SetPart Quantity</label>
-                        <div class="col-sm-10">
-                          <input type="email" class="form-control" id="inputEmail3" placeholder="SetPart Quantity">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                          <button type="submit" class="btn btn-default">Submit</button>
-                        </div>
-                      </div>
-                  </div><!-- / Register Body -->
-                </div><!-- / Register Panel -->
-              </form>
-            </div>
-          </div><!--============================================================ End column 1  -->
+    if(isset($_SESSION['originalKeys'])) {
+      $originalKeys = unserialize($_SESSION['originalKeys']);
+    }
+
+    if(isset($_POST['submitType'])) {
+      $submitType = makeSafer($_POST['submitType']);
+      if(!($submitType === 'modify' || $submitType === 'delete' || $submitType === 'addNew')) {
+        $submitType = 'false';
+      }
+    }
+
+    if(isset($submitType) && $submitType === 'addNew') {
+      $formButtons = formAddRecord();
+    } else {
+      $formButtons = formModifyDeleteRecord();
+    }
+
+    $input = array();
+
+    if(isset($_POST[$field_setID->id])) {                         //  Check if $_POST[$field_setID->id] is set.
+      if(!empty($_POST[$field_setID->id])) {                      //  Check if it is empty.
+        $input[$field_setID->id] = makeSafer($_POST[$field_setID->id]); //  Trim, strip slashes, and make certain character into their entity form.
+        $field_setID->value = $input[$field_setID->id];        //  Set the fields value.
+      }
+    }
+
+    if(isset($_POST[$field_partID->id])) {                         //  Check if $_POST[$field_partID->id] is set.
+      if(!empty($_POST[$field_partID->id])) {                      //  Check if it is empty.
+        $input[$field_partID->id] = makeSafer($_POST[$field_partID->id]); //  Trim, strip slashes, and make certain character into their entity form.
+        $field_partID->value = $input[$field_partID->id];        //  Set the fields value.
+      }
+    }  
         
-          <div class="col-xs-2 col-sm-2 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
-            <div class="well">
-              <div class="btn-group-vertical"><!--  sidebar menu items  -->
-                      
-                <!-- Main Menu -->
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Menu <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="forms.php">Forms</a></li>
-                    <li><a href="reports.php">Reports</a></li>
-                    <li class="divider"></li>
-                    <li><a href="form_settings.php">Settings</a></li>
-                    <li class="divider"></li>
-                    <li><a href="logout.php">Sign-out</a></li>
-                  </ul>
-                </div>
+    if(isset($_POST[$field_colorID->id])) {                         //  Check if $_POST[$field_colorID->id] is set.
+      if(!empty($_POST[$field_colorID->id])) {                      //  Check if it is empty.
+        $input[$field_colorID->id] = makeSafer($_POST[$field_colorID->id]); //  Trim, strip slashes, and make certain character into their entity form.
+        $field_colorID->value = $input[$field_colorID->id];        //  Set the fields value.
+      }
+    }
+
+    if(isset($_POST[$field_setPartQty->id])) {                         //  Check if $_POST['setTheme'] is set.
+      if(!empty($_POST[$field_setPartQty->id])) {                      //  Check if it is empty.
+        $input[$field_setPartQty->id] = makeSafer($_POST[$field_setPartQty->id]); //  Trim, strip slashes, and make certain character into their entity form.
+        $field_setPartQty->value = $input[$field_setPartQty->id];        //  Set the fields value.
+
+        if(isWholeNumber($input[$field_setPartQty->id])) { //  Check that the input matches allowed characters and or character types.
+          $field_setPartQty->has_success();   //  Shows check mark if valid.
+          $validInput++;
+        } else {
+          $field_setPartQty->error = 'Bad Value'; //  Error String is set.
+          $field_setPartQty->has_error();         //  Shows and 'X' that it is not valid.
+        }
+      } else {
+        $field_setPartQty->has_required(); //  Shows an asterisk if the field was required and submitted empty.
+      }
+    }
+
+    $data = array_merge($field_setID->get_column_Value(),
+                        $field_partID->get_column_Value(),
+                        $field_colorID->get_column_Value(),
+                        $field_setPartQty->get_column_Value());
+
+    if($submitType === 'delete') {
+      whatToDo($submitType, $keys, $data, $originalKeys);
+    }
+
+    if($validInput === 1 && $submitType !== 'delete') {
+      whatToDo($submitType, $keys, $data, $originalKeys);
+    }
+
+    if(isset($_POST['keys']) && !empty($_POST['keys'])) {
+
+      $posted_keys = $_POST['keys'];
+      $posted_keys = substr_replace($posted_keys,"}",-2);
+      $posted_keys = str_replace("'",'"',$posted_keys);
+      $posted_keys = json_decode($posted_keys);
+
+      $results = $db->select("Lego_SetPart","*","color_id='$posted_keys->color_id' AND part_id='$posted_keys->part_id' AND set_id='$posted_keys->set_id'");
+
+      $originalKeys = array();
+      $originalKeys[] = array('field' => 'set_id', 'value' => $results['set_id']);
+      $originalKeys[] = array('field' => 'part_id', 'value' => $results['part_id']);
+      $originalKeys[] = array('field' => 'color_id', 'value' => $results['color_id']);
+
+      $_SESSION['originalKeys'] = serialize($originalKeys);
+
+      $field_setID->value = $results['set_id'];
+      $field_partID->value = $results['part_id'];
+      $field_colorID->value = $results['color_id'];
+      $field_setPartQty->value = $results['setPart_qty'];
+
+    }
+  } else {
+      $formButtons = formAddRecord();
+  }
+
+
+$extraCss = <<<EXTRACSS
+    <!-- Bootstrap-Multiselect -->
+    <link rel="stylesheet" href="libraries/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" type="text/css"/>
+
+EXTRACSS;
+
+echo html_header("Part form", $extraCss),
+     html_containerStart() ;
+?>
+              <form id="theForm" class="form-horizontal" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 
+                <div class="panel panel-primary">
+
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Form: Parts</h3>
+                  </div>
+
+                  <div class="panel-body">
+                    <?php 
+                      echo $field_setID->toString(),"\n",
+                           $field_partID->toString(),"\n",
+                           $field_colorID->toString(),"\n",
+                           $field_setPartQty->toString(),"\n",
+                           $formButtons,"\n";
+                    ?>
+                    
+                  </div>
+                </div><!-- End panel  -->
+              </form>
+<?php echo html_column1End(),
+           html_menuStart();
+?>              
                 <!-- Page Label -->
                 <div class="h3" style="margin-top: 10px;">
                   <span class="label label-default center-block">Forms</span>
@@ -123,42 +204,101 @@ require 'resources/includes/include.global.php';
                 
                 <div  style="padding-top: 10px;"></div>
                 
-                <!-- Sets -->
+                <!-- Return to Forms page -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_sets.php" role="button">Sets</a>
-                </div>
-                
-                <!-- Colors -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_parts.php" role="button">Parts</a>
-                </div>
-                
-                <!-- Parts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_colors.php" role="button">Colors</a>
-                </div>
-                
-                <!-- ColorParts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_colorpart.php" role="button">ColorParts</a>
-                </div>
-                
-                <!-- SetParts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_setpart.php" role="button">SetParts</a>
+                  <a class="btn btn-default" href="forms.php" role="button">Forms Home</a>
                 </div>
 
-              </div><!--======================================================== End sidebar menu items    -->
-            </div><!--========================================================== End well                  -->
-          </div><!--============================================================ End column 2              -->
-        </div><!--============================================================== End Overall Column sizes  -->
-      </div><!--================================================================ End row                   -->
-    </div><!--================================================================== End container             -->
+<?php 
+  echo html_Ending(),"\n",
+       formDeleteScripts();
+?>
+    <script type="text/javascript" src="libraries/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+    <script>
+      $(function() {
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="libraries/jquery/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="libraries/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="resources/js/offcanvas.js"></script>
+        $("[data-toggle='tooltip']").tooltip();
+
+        $(<?php echo "'#",$field_setID->id,"'" ?>).multiselect({
+          maxHeight: 200,
+          buttonWidth: '200px',
+          checkboxName: <?php echo "'",$field_setID->id,"'" ?>,
+          nonSelectedText: 'Check an option!',
+          enableCaseInsensitiveFiltering: true,
+          filterPlaceholder: 'Search for something...',
+          
+        });
+
+        $(<?php echo "'#",$field_partID->id,"'" ?>).multiselect({
+          maxHeight: 200,
+          buttonWidth: '200px',
+          checkboxName: <?php echo "'",$field_partID->id,"'" ?>,
+          nonSelectedText: 'Check an option!',
+          enableCaseInsensitiveFiltering: true,
+          filterPlaceholder: 'Search for something...',
+          
+        });
+
+        $(<?php echo "'#",$field_colorID->id,"'" ?>).multiselect({
+          maxHeight: 200,
+          buttonWidth: '200px',
+          checkboxName: <?php echo "'",$field_colorID->id,"'" ?>,
+          nonSelectedText: 'Check an option!',
+          enableCaseInsensitiveFiltering: true,
+          filterPlaceholder: 'Search for something...',
+          
+        });
+
+        $(<?php echo "'#",$field_setID->id,"'" ?>).multiselect('select', <?php echo "'",$field_setID->value,"'" ?>);
+        $(<?php echo "'#",$field_partID->id,"'" ?>).multiselect('select', <?php echo "'",$field_partID->value,"'" ?>);
+        $(<?php echo "'#",$field_colorID->id,"'" ?>).multiselect('select', <?php echo "'",$field_colorID->value,"'" ?>);
+
+        //  Modified example from "http://learn.jquery.com/ajax/jquery-ajax-methods/"
+        // Using the core $.ajax() method
+        $.ajax({
+          // the URL for the request
+          url: "resources/php/formDropdownData.php",
+          // the data to send (will be converted to a query string)
+          data: {
+            set: 'Lego_Set',
+            part: 'Lego_Part',
+            color: 'Lego_Color'
+          },
+          // whether this is a POST or GET request
+          type: "POST",
+          // the type of data we expect back
+          dataType : "json",
+          // code to run if the request succeeds;
+          // the response is passed to the function
+          success: function( data ) {
+            $(<?php echo "'#",$field_setID->id,"'" ?>).multiselect('dataprovider', data.set);
+            $(<?php echo "'#",$field_setID->id,"'" ?>).multiselect('select', <?php echo "'",$field_setID->value,"'" ?>);
+
+            $(<?php echo "'#",$field_partID->id,"'" ?>).multiselect('dataprovider', data.part);
+            $(<?php echo "'#",$field_partID->id,"'" ?>).multiselect('select', <?php echo "'",$field_partID->value,"'" ?>);
+
+            $(<?php echo "'#",$field_colorID->id,"'" ?>).multiselect('dataprovider', data.color);
+            $(<?php echo "'#",$field_colorID->id,"'" ?>).multiselect('select', <?php echo "'",$field_colorID->value,"'" ?>);
+
+          },
+          // code to run if the request fails; the raw request and
+          // status codes are passed to the function
+          error: function( xhr, status, errorThrown ) {
+          alert( "Sorry, there was a problem!" );
+          console.log( "Error: " + errorThrown );
+          console.log( "Status: " + status );
+          console.dir( xhr );
+          },
+          // code to run regardless of success or failure
+          complete: function( xhr ) {
+            //  
+            $(<?php echo "'#",$field_setID->id,"'" ?>).multiselect('rebuild');
+            $(<?php echo "'#",$field_partID->id,"'" ?>).multiselect('rebuild');
+            $(<?php echo "'#",$field_colorID->id,"'" ?>).multiselect('rebuild');
+
+          }
+        });
+      });
+    </script>
   </body>
 </html>

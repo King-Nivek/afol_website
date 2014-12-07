@@ -4,6 +4,7 @@
   // the system. It uses UserTools to check credentials.
   //
   require 'resources/includes/include.global.php';
+  require_once 'resources/php/validationTools.php';
 
   $error = "";
   $email = "";
@@ -12,16 +13,20 @@
   //check to see if they've submitted the login form
   if(isset($_POST['sign-in']) && !empty($_POST["sign-in"])) { 
   
-    $email = $_POST['u_email'];
-    $password = $_POST['u_password'];
-  
-    $userTools = new UserTools();
-    if($userTools->login($email, $password)){ 
-      //successful login, redirect them to a page
-      header("Location: index.php");
-    }
-    else{
-      $error = "<h2 class=\"text-danger\" style=\"text-align: center\">Incorrect username or password. Please try again.</h2>";
+    $email = trim($_POST['u_email']);
+    $password = trim($_POST['u_password']);
+    
+    if(isEmail($email) && isPassword($password)) {
+      $userTools = new UserTools();
+      if($userTools->login($email, $password)){ 
+        //successful login, redirect them to a page
+        header("Location: index.php");
+      }
+      else{
+        $error = "<h4 class=\"text-danger\" style=\"text-align: center\">Incorrect username or password. Please try again.</h4>";
+      }
+    } else {
+      $error = "<h4 class=\"text-danger\" style=\"text-align: center\">Bad Input for username or password. Please try again.</h4>";
     }
   }
 ?>
@@ -49,11 +54,12 @@
     <![endif]-->
   </head>
   <body>
+    <img src="logo.gif" width="1" height="1" alt="">
     <div class="container">
       <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-10">
+        <div class="col-xs-12 col-sm-12">
           
-          <div class="col-xs-10 col-sm-10 "><!--  column 1  -->
+          <div class="col-xs-12 col-sm-9 "><!--  column 1  -->
 
             <p class="pull-right visible-xs">
               <button type="button" class="btn btn-warning btn-xs" data-toggle="offcanvas">Toggle nav</button>
@@ -69,6 +75,7 @@
               <!-- FORM  
               ============================================================== -->
               <form id="form_sign-in" action="form_sign-in.php" method="POST" class="form-horizontal" role="form">
+                <?php echo $error; ?>
                 <div class="form-group">
                   <label for="u_email" class="col-sm-2 control-label">Email</label>
                   <div class="col-sm-10">
@@ -77,7 +84,8 @@
                            class="form-control" 
                            id="u_email" 
                            name="u_email" 
-                           value="<?php echo $email; ?>" 
+                           value="<?php echo $email; ?>"
+                           maxlength = 50 
                            placeholder="Email"
                     >
 
@@ -92,6 +100,7 @@
                            id="u_password" 
                            name="u_password" 
                            value="<?php echo $password; ?>" 
+                           maxlength = 30
                            placeholder="Password"
                     >
 
@@ -121,13 +130,13 @@
 
           </div><!--============================================================ End column 1  -->
         
-          <div class="col-xs-2 col-sm-2 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
+          <div class="col-xs-0 col-sm-3 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
             <div class="well">
-              <div class="btn-group-vertical"><!--  sidebar menu items  -->
-                      
+              <div class="btn-groupp"><!--  sidebar menu items  -->
+                
                 <!-- Main Menu -->
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown">
                     Menu <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">
