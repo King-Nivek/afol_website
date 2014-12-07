@@ -2,6 +2,7 @@
   //include.global.php
 
   //start the session
+  date_default_timezone_set('America/Virgin');
   session_name("afol");
   session_start();
 
@@ -10,6 +11,7 @@
   require_once 'resources/classes/class.UserTools.php';
   //require_once 'includes/include.navbar.php';
   //require_once 'includes/include.utils.php';
+  require_once 'resources/includes/include.htmlRepeats.php';
 
 
   //connect to the database

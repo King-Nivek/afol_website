@@ -1,5 +1,9 @@
 <?php
 require 'resources/includes/include.global.php';
+require_once 'resources/classes/class.FormField.php';
+require_once 'resources/includes/include.htmlFormButtons.php';
+require_once 'resources/php/validationTools.php';
+require_once 'resources/php/inputValid.php';
 
   //check to see if they're logged in
   if(!isset($_SESSION['logged_in'])) {
@@ -19,93 +23,147 @@ require 'resources/includes/include.global.php';
   $toID = "";
   $toUser = null;
 
+  $field_colorID = new FormField();
+  $field_colorID->table = 'Lego_Color';
+  $field_colorID->field = 'color_id';
+  $field_colorID->label_text = 'Color ID';
+  $field_colorID->id = 'colorID';
+  $field_colorID->name = 'colorID';
+  $field_colorID->placeholder = '97';
+  $field_colorID->maxlength = 3;
+  $field_colorID->tooltip_text = 'Please enter the BrickLink Color number.';
+
+  $field_colorName = new FormField();
+  $field_colorName->table = 'Lego_Color';
+  $field_colorName->field = 'color_name';
+  $field_colorName->label_text = 'Color Name';
+  $field_colorName->id = 'colorName';
+  $field_colorName->name = 'colorName';
+  $field_colorName->placeholder = 'Tile';
+  $field_colorName->maxlength = 40;
+  $field_colorName->tooltip_text = 'Please enter the BrickLink Color Name.';
+
+  $formButtons = '';
+  $submitType = 'false';
+  $validInput = 0;
+  $originalKeys = array();
+
+  $keys = array();
+  $keys[] = &$field_colorID;
+
+  if($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if(isset($_SESSION['originalKeys'])) {
+      $originalKeys = unserialize($_SESSION['originalKeys']);
+    }
+
+    if(isset($_POST['submitType'])) {
+      $submitType = makeSafer($_POST['submitType']);
+      if(!($submitType === 'modify' || $submitType === 'delete' || $submitType === 'addNew')) {
+        $submitType = 'false';
+      }
+    }
+
+    if(isset($submitType) && $submitType === 'addNew') {
+      $formButtons = formAddRecord();
+    } else {
+      $formButtons = formModifyDeleteRecord();
+    }
+
+    $input = array();
+
+    if(isset($_POST[$field_colorID->id])) {                        //  Check if $_POST['colorID'] is set.
+      if(!empty($_POST[$field_colorID->id])) {                     //  Check if it is empty.
+        $input[$field_colorID->id] = makeSafer($_POST[$field_colorID->id]); //  Trim, strip slashes, and make certain character into their entity form.
+        $field_colorID->value = $input[$field_colorID->id];        //  Set the fields value.
+
+        if(isWholeNumber($input[$field_colorID->id])) {  //  Check that the input matches allowed characters and or character types.
+          $field_colorID->has_success();        //  Shows check mark if valid.
+          $validInput++;
+        } else {
+          $field_colorID->error = 'Bad Value';  //  Error String is set.
+          $field_colorID->has_error();                  //  Shows and 'X' that it is not valid.
+        }
+      } else {
+        $field_colorID->has_required();  //  Shows an asterisk if the field was required and submitted empty.
+      }
+    }
+
+    if(isset($_POST[$field_colorName->id])) {                          //  Check if $_POST['colorName'] is set.
+      if(!empty($_POST[$field_colorName->id])) {                       //  Check if it is empty.
+        $input[$field_colorName->id] = makeSafer($_POST[$field_colorName->id]); //  Trim, strip slashes, and make certain character into their entity form.
+        $field_colorName->value = $input[$field_colorName->id];        //  Set the fields value.
+
+        if(isColorName($input[$field_colorName->id])) {  //  Check that the input matches allowed characters and or character types.
+          $field_colorName->has_success();      //  Shows check mark if valid.
+          $validInput++;
+        } else {
+          $field_colorName->error = 'Bad Value';  //  Error String is set.
+          $field_colorName->has_error();                  //  Shows and 'X' that it is not valid.
+        }
+      } else {
+        $field_colorName->has_required();  //  Shows an asterisk if the field was required and submitted empty.
+      }
+    }
+
+
+    $data = array_merge($field_colorID->get_column_Value(),
+                        $field_colorName->get_column_Value());
+
+    if($submitType === 'delete') {
+      whatToDo($submitType, $keys, $data, $originalKeys);
+    }
+
+    if($validInput === 2 && $submitType !== 'delete') {
+      whatToDo($submitType, $keys, $data, $originalKeys);
+    }
+
+    if(isset($_POST['keys']) && !empty($_POST['keys'])) {
+
+      $posted_keys = $_POST['keys'];
+      $posted_keys = substr_replace($posted_keys,"}",-2);
+      $posted_keys = str_replace("'",'"',$posted_keys);
+      $posted_keys = json_decode($posted_keys);
+
+      $results = $db->select("Lego_Color","*","color_id='$posted_keys->color_id'");
+
+      $originalKeys = array();
+      $originalKeys[] = array('field' => 'color_id', 'value' => $results['color_id']);
+
+      $_SESSION['originalKeys'] = serialize($originalKeys);
+
+      $field_colorID->value = $results['color_id'];
+      $field_colorName->value = $results['color_name'];
+
+    }
+  } else {
+      $formButtons = formAddRecord();
+  }
+
+echo html_header("Color form"),
+     html_containerStart() ;
 ?>
-
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Color Form</title>
-
-    <!-- Bootstrap -->
-    <link href="libraries/custom/custom-bootstrap.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="resources/css/offcanvas.css" rel="stylesheet">
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="container">
-      <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-10">
-          
-          <div class="col-xs-10 col-sm-10 "><!--  column 1  -->
-
-            <p class="pull-right visible-xs">
-              <button type="button" class="btn btn-warning btn-xs" data-toggle="offcanvas">Toggle nav</button>
-            </p>
-
-            <div class="well">
-              <form class="form-horizontal" role="form">                      <!-- form -->
+              <form id="theForm" class="form-horizontal" role="form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="POST">
                 
-                <div class="panel panel-primary">                             <!-- Register Panel -->
+                <div class="panel panel-primary">
 
                   <div class="panel-heading">
                     <h3 class="panel-title">Form: Colors</h3>
                   </div>
 
-                  <div class="panel-body">                                    <!-- Register Body -->
-                      <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Color ID</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputPassword3" placeholder="Color ID">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Color Name</label>
-                        <div class="col-sm-10">
-                          <input type="text" class="form-control" id="inputPassword3" placeholder="Color Name">
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <div class="col-sm-offset-2 col-sm-10">
-                          <button type="submit" class="btn btn-default">Submit</button>
-                        </div>
-                      </div>
-                  </div><!-- / Register Body -->
-                </div><!-- / Register Panel -->
+                  <div class="panel-body">
+                    <?php 
+                      echo $field_colorID->toString(),"\n",
+                           $field_colorName->toString(),"\n",
+                           $formButtons,"\n";
+                    ?>
+                    
+                  </div>
+                </div><!-- End panel  -->
               </form>
-            </div>
-          </div><!--============================================================ End column 1  -->
-        
-          <div class="col-xs-2 col-sm-2 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
-            <div class="well">
-              <div class="btn-group-vertical"><!--  sidebar menu items  -->
-                      
-                <!-- Main Menu -->
-                <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    Menu <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="forms.php">Forms</a></li>
-                    <li><a href="reports.php">Reports</a></li>
-                    <li class="divider"></li>
-                    <li><a href="form_settings.php">Settings</a></li>
-                    <li class="divider"></li>
-                    <li><a href="logout.php">Sign-out</a></li>
-                  </ul>
-                </div>
-                
+<?php echo html_column1End(),
+           html_menuStart();
+?>              
                 <!-- Page Label -->
                 <div class="h3" style="margin-top: 10px;">
                   <span class="label label-default center-block">Forms</span>
@@ -113,42 +171,19 @@ require 'resources/includes/include.global.php';
                 
                 <div  style="padding-top: 10px;"></div>
                 
-                <!-- Sets -->
+                <!-- Return to Forms page -->
                 <div class="btn-group">
-                  <a class="btn btn-default" href="form_sets.php" role="button">Sets</a>
-                </div>
-                
-                <!-- Colors -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_parts.php" role="button">Parts</a>
-                </div>
-                
-                <!-- Parts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_colors.php" role="button">Colors</a>
-                </div>
-                
-                <!-- ColorParts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_colorpart.php" role="button">ColorParts</a>
-                </div>
-                
-                <!-- SetParts -->
-                <div class="btn-group">
-                  <a class="btn btn-default" href="form_setpart.php" role="button">SetParts</a>
+                  <a class="btn btn-default" href="forms.php" role="button">Forms Home</a>
                 </div>
 
-              </div><!--======================================================== End sidebar menu items    -->
-            </div><!--========================================================== End well                  -->
-          </div><!--============================================================ End column 2              -->
-        </div><!--============================================================== End Overall Column sizes  -->
-      </div><!--================================================================ End row                   -->
-    </div><!--================================================================== End container             -->
-
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="libraries/jquery/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="libraries/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="resources/js/offcanvas.js"></script>
+<?php 
+  echo html_Ending(),"\n",
+       formDeleteScripts();
+?>
+    <script>
+      $(function () { 
+        $("[data-toggle='tooltip']").tooltip(); 
+      });
+    </script>
   </body>
 </html>

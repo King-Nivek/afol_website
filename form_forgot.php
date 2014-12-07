@@ -45,9 +45,9 @@ require 'resources/includes/include.global.php';
   <body>
     <div class="container">
       <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-10">
+        <div class="col-xs-12 col-sm-12">
           
-          <div class="col-xs-10 col-sm-10 "><!--  column 1  -->
+          <div class="col-xs-12 col-sm-9 "><!--  column 1  -->
 
             <p class="pull-right visible-xs">
               <button type="button" class="btn btn-warning btn-xs" data-toggle="offcanvas">Toggle nav</button>
@@ -82,13 +82,13 @@ require 'resources/includes/include.global.php';
             </div>
           </div><!--============================================================ End column 1  -->
         
-          <div class="col-xs-2 col-sm-2 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
+          <div class="col-xs-0 col-sm-3 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
             <div class="well">
-              <div class="btn-group-vertical"><!--  sidebar menu items  -->
-                      
+              <div class="btn-groupp"><!--  sidebar menu items  -->
+                
                 <!-- Main Menu -->
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown">
                     Menu <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">

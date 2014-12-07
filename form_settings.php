@@ -45,9 +45,9 @@ require 'resources/includes/include.global.php';
   <body>
     <div class="container">
       <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-10">
+        <div class="col-xs-12 col-sm-12">
           
-          <div class="col-xs-10 col-sm-10 "><!--  column 1  -->
+          <div class="col-xs-12 col-sm-9 "><!--  column 1  -->
 
             <p class="pull-right visible-xs">
               <button type="button" class="btn btn-warning btn-xs" data-toggle="offcanvas">Toggle nav</button>
