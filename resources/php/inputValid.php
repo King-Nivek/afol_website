@@ -1,4 +1,26 @@
 <?php
+////  Used by all the "form_*.php" files to interact with the database.
+/*
+The main Logic for what to do when on the add new record and modify or delete pages.
+
+  - takes the parameters:
+     - $submitType  --  which are modify, delete, or addNew
+     - &$keys  --  which is a reference to an array that holds the FormField objects that have the key(s) for their table.
+     - $data  --  Holds the  data to be inserted or modified in the database
+     - $originalKeys  --  used to make matches and determinations about the info to be modified.
+
+  - The top of the file does need some cleaning up.
+     - The top part does some magic for when it is a user table to give proper feedback to the admin.
+     - The top also make the 'where' part of the queries so that if multiple keys are used it will check them all at one time to find the proper record.
+
+  - The rest is fairly straight forward in that it determines if it is to modify, delete, or addNew record.
+
+  - The &$keys is used to give access strait to the objects so that
+     1). Data can be extracted
+     2). feedback can be put on the field if it is need for warnings.
+
+*/
+
 //  All input is valid now do this...
 
 function whatToDo($submitType, &$keys, $data, $originalKeys) {

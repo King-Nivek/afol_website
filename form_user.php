@@ -1,4 +1,6 @@
 <?php
+// to see comments that would be very similar to this pages look at "form_colorpart.php"
+
 require 'resources/includes/include.global.php';
 require_once 'resources/classes/class.FormField.php';
 require_once 'resources/includes/include.htmlFormButtons.php';

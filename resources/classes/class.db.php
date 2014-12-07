@@ -8,10 +8,10 @@
 
   class DB {
 
-    protected $host     = "***REMOVED***";
-    protected $user     = "***REMOVED***";
-    protected $password = "***REMOVED***";
-    protected $dbName   = "***REMOVED***";
+    protected $host     = "ZZZ";
+    protected $user     = "ZZZ";
+    protected $password = "ZZZ";
+    protected $dbName   = "ZZZ";
 
     public $mysqli;
 
