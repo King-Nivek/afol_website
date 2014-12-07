@@ -29,6 +29,25 @@ restrictions:
   their respective repositories).
 
 
+## Issues and labels
+
+Our bug tracker utilizes several labels to help organize and identify issues. Here's what they represent and how we use them:
+
+- `browser bug` - Issues that are reported to us, but actually are the result of a browser-specific bug. These are diagnosed with reduced test cases and result in a issue opened on that browser's own bug tracker.
+- `confirmed` - Issues that have been confirmed with a reduced test case and idenfity a bug in Bootstrap.
+- `css` - Issues stemming from our compiled CSS or source Less files.
+- `customizer` - Issues with our web-based Customizer.
+- `docs` - Issues for improving or updating our documentation.
+- `examples` - Issues involving the example templates included in our docs.
+- `feature` - Issues asking for a new feature to be added, or an existing one to be extended or modified. New features require a minor version bump (e.g., `v3.0.0` to `v3.1.0`).
+- `grunt` - Issues with our included JavaScript-based Gruntfile, which is used to run all our tests, concatenate and compile source files, and more.
+- `help wanted` - Issues we need or would love help from the community to resolve.
+- `js` - Issues stemming from our compiled or source JavaScript files.
+- `meta` - Issues with the project itself or our GitHub repository.
+
+For a complete look at our labels, see the [project labels page](/twbs/bootstrap/labels).
+
+
 ## Bug reports
 
 A bug is a _demonstrable problem_ that is caused by the code in the repository.
@@ -88,6 +107,10 @@ When feasible, we aim to report such upstream bugs to the relevant browser vendo
 | Google, Opera | Chrome, Chromium, Opera v15+ | Blink            | https://code.google.com/p/chromium/issues/list                                        | Click the "New issue" button.                            |
 | Microsoft     | Internet Explorer            | Trident          | https://connect.microsoft.com/IE/feedback/LoadSubmitFeedbackForm                      |                                                          |
 
+### Issues bots
+
+[@twbs-lmvtfy](https://github.com/twbs-lmvtfy) is a Bootstrap bot that hangs out in our GitHub issue tracker and automatically checks for HTML validation errors in live examples (e.g. jsFiddles, JS Bins, Bootplys, Plunks, CodePens, etc.) posted in issue comments. If it finds any errors, it will post a follow-up comment on the issue and point out the errors. If this happens with an example you've posted, please fix the errors and post an updated live example. If you opened a bug report, please check whether the bug still occurs with your revised, valid live example. If the bug no longer occurs, it was probably due to your invalid HTML rather than something in Bootstrap and we'd appreciate it if you could close out the GitHub issue.
+
 
 ## Feature requests
 
@@ -111,6 +134,17 @@ project's developers might not want to merge into the project.
 Please adhere to the [coding guidelines](#code-guidelines) used throughout the
 project (indentation, accurate comments, etc.) and any other requirements
 (such as test coverage).
+
+**Do not edit `bootstrap.css`, `bootstrap-theme.css`, or `bootstrap.js`
+directly!** Those files are automatically generated. You should edit the
+source files in [`/bootstrap/less/`](https://github.com/twbs/bootstrap/tree/master/less)
+and/or [`/bootstrap/js/`](https://github.com/twbs/bootstrap/tree/master/js) instead.
+
+Similarly, when contributing to Bootstrap's documentation, you should edit the
+documentation source files in
+[the `/bootstrap/docs/` directory of the `master` branch](https://github.com/twbs/bootstrap/tree/master/docs).
+**Do not edit the `gh-pages` branch.** That branch is generated from the
+documentation source files and is managed separately by the Bootstrap Core Team.
 
 Adhering to the following process is the best way to get your work
 included in the project:
@@ -164,6 +198,13 @@ included in the project:
 
 **IMPORTANT**: By submitting a patch, you agree to allow the project owners to
 license your work under the terms of the [MIT License](LICENSE.md).
+
+### Pull request checker bot: Rorschach
+
+[@twbs-rorschach](https://github.com/twbs-rorschach) is a Bootstrap bot that hangs out in our GitHub issue tracker and automatically checks all pull requests for a few simple common mistakes. It's possible that Rorschach might leave a comment on your pull request and then close it. If that happens, simply fix the problem(s) mentioned in the comment (there should be link(s) in the comment explaining the problem(s) in detail) and then either:
+
+* Push the revised version to your pull request's branch and post a comment on the pull request saying that you've fixed the problem(s). One of the Bootstrap Core Team members will then come along and reopen your pull request.
+* Or you can just open a new pull request for your revised version.
 
 
 ## Code guidelines
