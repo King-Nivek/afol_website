@@ -1,6 +1,6 @@
 <?php
 require 'resources/includes/include.global.php';
-require_once 'resources/classes/class.TableTools.php';
+//require_once 'resources/classes/class.TableTools.php';
 
 
 //check to see if they're logged in
@@ -53,9 +53,9 @@ $toUser = null;
   <body>
     <div class="container">
       <div class="row row-offcanvas row-offcanvas-right">
-        <div class="col-xs-12 col-sm-10">
+        <div class="col-xs-12 col-sm-12">
           
-          <div class="col-xs-10 col-sm-10 "><!--  column 1  -->
+          <div class="col-xs-12 col-sm-9 "><!--  column 1  -->
 
             <p class="pull-right visible-xs">
               <button type="button" class="btn btn-warning btn-xs" data-toggle="offcanvas">Toggle nav</button>
@@ -74,13 +74,13 @@ $toUser = null;
 
           </div><!--============================================================ End column 1  -->
         
-          <div class="col-xs-2 col-sm-2 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
+          <div class="col-xs-0 col-sm-3 sidebar-offcanvas" id="sidebar"><!--  column 2  -->
             <div class="well">
-              <div class="btn-group-vertical"><!--  sidebar menu items  -->
+              <div class="btn-groupp"><!--  sidebar menu items  -->
                 
                 <!-- Main Menu -->
                 <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  <button type="button" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown">
                     Menu <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">
@@ -101,29 +101,89 @@ $toUser = null;
                                     
                 <div  style="padding-top: 10px;"></div>
 
+                <?php if ($user->privilage === 'A') { ?>
+                <!-- Users -->
+                <div class="btn-group">
+                  <button class="btn btn-default" name="tableType" value="User" id="bttn_users" role="button">Users</button>
+                  <!-- <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="form_sets.php">Add New</a></li>
+                  </ul> -->
+                </div>
+                <?php } ?>
+
                 <!-- Sets -->
                 <div class="btn-group">
                   <button class="btn btn-default" name="tableType" value="Lego_Set" id="bttn_sets" role="button">Sets</button>
+                  <?php if ($user->privilage === 'A') { ?>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="form_sets.php">Add New</a></li>
+                  </ul>
+                  <?php } ?>
+                </div>
+
+                <?php if ($user->privilage !== 'A') { ?> <br> <?php } ?>
+                <!-- Parts -->
+                <div class="btn-group">
+                  <button class="btn btn-default" name="tableType" value="Lego_Part" id="bttn_parts" role="button">Parts</button>
+                  <?php if ($user->privilage === 'A') { ?>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="form_parts.php">Add New</a></li>
+                  </ul>
+                  <?php } ?>
                 </div>
 
                 <!-- Colors -->
                 <div class="btn-group">
-                  <button class="btn btn-default" name="tableType" value="Lego_Part" id="bttn_parts" role="button">Parts</button>
-                </div>
-
-                <!-- Parts -->
-                <div class="btn-group">
                   <button class="btn btn-default" name="tableType" value="Lego_Color" id="bttn_color" role="button">Colors</button>
+                  <?php if ($user->privilage === 'A') { ?>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="form_colors.php">Add New</a></li>
+                  </ul>
+                  <?php } ?>
                 </div>
 
                 <!-- ColorParts -->
                 <div class="btn-group">
                   <button class="btn btn-default" name="tableType" value="Lego_ColorPart" id="bttn_colorPart" role="button">ColorParts</button>
+                  <?php if ($user->privilage === 'A') { ?>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="form_colorpart.php">Add New</a></li>
+                  </ul>
+                  <?php } ?>
                 </div>
 
                 <!-- SetParts -->
                 <div class="btn-group">
                   <button class="btn btn-default" name="tableType" value="Lego_SetPart" id="bttn_setPart" role="button">SetParts</button>
+                  <?php if ($user->privilage === 'A') { ?>
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a href="form_setpart.php">Add New</a></li>
+                  </ul>
+                  <?php } ?>
                 </div>
 
               </div><!--======================================================== End sidebar menu items    -->
@@ -142,70 +202,46 @@ $toUser = null;
     <script>
       $(function() {
 
-   /*     //  Ajax Function  
-        $("button[name='tableType']").click(function(){
-          $.post("resources/php/formsHelper.php", {
-            tableType: $(this).val()
-          },
-          function(data,status){
-            $("#tableRecords").html(data);
-          });
-          $('td:has(span)').on({
-            mouseenter: function() {
-              $(this).css('background-color','#d9534f');
-            },
-            mouseleave: function() {
-              $(this).css('background-color','#fff');
-            }
-          });
-        });// End Ajax Function*/
-
         //  Modified example from "http://learn.jquery.com/ajax/jquery-ajax-methods/"
         $("button[name='tableType']").click(function(){
           // Using the core $.ajax() method
           $.ajax({
-          // the URL for the request
-          url: "resources/php/formsHelper.php",
-          // the data to send (will be converted to a query string)
-          data: {
-            tableType: $(this).val()
-          },
-          // whether this is a POST or GET request
-          type: "POST",
-          // the type of data we expect back
-          dataType : "json",
-          // code to run if the request succeeds;
-          // the response is passed to the function
-          success: function( data ) {
-            // console.log(data);
-            $("#tableRecords").html(data['html']);
-            $('#form_type').attr('action', data.form_type.toString());
-          },
-          // code to run if the request fails; the raw request and
-          // status codes are passed to the function
-          error: function( xhr, status, errorThrown ) {
-          alert( "Sorry, there was a problem!" );
-          console.log( "Error: " + errorThrown );
-          console.log( "Status: " + status );
-          console.dir( xhr );
-          },
-          // code to run regardless of success or failure
-          complete: function( xhr ) {
-            // console.log(typeof(xhr.responseJSON.form_type));
-            /*$('tr.data-row > td:first-child').click(function(xhr) {
-              //  Go to delete page and set values to selected row
-            });*/
-            $('tr.data-row > td:gt(0)').click(function(data) {
-              //  Go to modify page and set values to selected row
-              $('#keys').val($(this).parent().data('key'));
-              // console.log($('#keys').val());
-              $('#form_type').submit();
-            });
-          }
+            // the URL for the request
+            url: "resources/php/formsHelper.php",
+            // the data to send (will be converted to a query string)
+            data: {
+              tableType: $(this).val()
+            },
+            // whether this is a POST or GET request
+            type: "POST",
+            // the type of data we expect back
+            dataType : "json",
+            // code to run if the request succeeds;
+            // the response is passed to the function
+            success: function( data ) {
+              $("#tableRecords").html(data['html']);
+              $('#form_type').attr('action', data.form_type.toString());
+            },
+            // code to run if the request fails; the raw request and
+            // status codes are passed to the function
+            error: function( xhr, status, errorThrown ) {
+            alert( "Sorry, there was a problem!" );
+            console.log( "Error: " + errorThrown );
+            console.log( "Status: " + status );
+            console.dir( xhr );
+            },
+            // code to run regardless of success or failure
+            complete: function( xhr ) {
+              $('tr.data-row > td:gt(0)').click(function(data) {
+                //  Go to modify page and set values to selected row
+                $('#keys').val($(this).parent().data('key'));
+                <?php if ($user->privilage === 'A') { ?>
+                $('#form_type').submit();
+                <?php } ?>
+              });
+            }
           });
         });
-        
-
       });
     </script>
   </body>
