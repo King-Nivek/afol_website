@@ -16,7 +16,7 @@
 
       $result = $db->mysqli->query("SELECT * 
                                       FROM User
-                                      WHERE user_email = '$email'");
+                                      WHERE user_email = '{$db->mysqli->real_escape_string($email)}'");
 
       if($result->num_rows == 1) {
         $row = $result->fetch_assoc();
@@ -55,9 +55,9 @@
     //  Parameter(s):  
     //  Returns:  
     //
-    public function check_userNameExistence($userName) {
+    public function check_userNameExistence($username) {
       global $db;
-      $result = $db->mysqli->query("SELECT user_id FROM User WHERE user_userName = '$userName'");
+      $result = $db->mysqli->query("SELECT user_id FROM User WHERE user_username = '{$db->mysqli->real_escape_string($username)}'");
       if($result->num_rows == 0) {
         return false;
       } else {
@@ -73,7 +73,7 @@
     //
     public function check_emailExistence($email) {
       global $db;
-      $result = $db->mysqli->query("SELECT user_id FROM User WHERE user_email = '$email'");
+      $result = $db->mysqli->query("SELECT user_id FROM User WHERE user_email = '{$db->mysqli->real_escape_string($email)}'");
       if($result->num_rows == 0) {
         return false;
       } else {
