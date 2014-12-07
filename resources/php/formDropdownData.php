@@ -1,4 +1,6 @@
 <?php
+////  Used by "form_colorpart.php" and "form_setpart.php"
+
 require_once '../classes/class.DB.php';
 require_once '../../libraries/array_column/array_column.php';
 

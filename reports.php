@@ -1,4 +1,6 @@
 <?php
+####  Not in real use yet, has no functionality yet.
+
 require 'resources/includes/include.global.php';
 
   //check to see if they're logged in

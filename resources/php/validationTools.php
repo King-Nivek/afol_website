@@ -1,4 +1,28 @@
 <?php
+////    The Validation tools for input.
+/*
+A file containing Validation functions.
+
+  - Has checks for: (a few of these are used in more then one place.  Some of the repeats are not fully noted below)
+     - isEmail
+     - isLength (not used yet)
+     - isUserName
+     - isPassword
+     - isUserPrivilege
+     - isDateTime
+     - isEmpty (not used yet)
+     - isSafer (not used should probably be removed)
+     - makeSafer (main function to clean up user input)
+     - isWholeNumber
+     - isColorName (is also used to check first and last names. Needs to be given a more appropriate name.)
+     - isPartID
+     - isPartCategory
+     - isPartSize
+     - isPartDescription
+     - isSetID
+     - isSetName
+*/
+
 //  class.ValidationTools.php
 
 

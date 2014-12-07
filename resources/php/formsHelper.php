@@ -1,4 +1,6 @@
 <?php
+////  Used by "forms.php"
+
 //  AJAX connection
 require_once '../classes/class.DB.php';
 //require_once '../classes/class.TableTools.php';
