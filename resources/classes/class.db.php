@@ -101,7 +101,7 @@
           $columns .= ($columns == "") ? "" : ", ";
           $columns .= $column;
           $values  .= ($values == "") ? "" : ", ";
-          $values  .= $value;
+          $values  .= "'".$this->mysqli->real_escape_string($value)."'";
         }
         $sql = "INSERT INTO $table ($columns) 
                   VALUES ($values)";
@@ -128,7 +128,8 @@
     //
     public function modify($table, $data, $where) {
       foreach($data as $column => $value) {
-        $sql = "UPDATE $table SET $column = $value WHERE $where";
+        $value = $this->mysqli->real_escape_string($value);
+        $sql = "UPDATE $table SET $column = '$value' WHERE $where";
         $this->mysqli->query($sql) or die($this->mysqli->error . ":\n\n" . $sql);
       }
       return true;
@@ -147,4 +148,4 @@
     }//  End delete  ============================================================
 
   }//  End CLASS  ===============================================================
-?>
+// ?>
