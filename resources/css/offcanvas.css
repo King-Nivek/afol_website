@@ -6,11 +6,11 @@ html,
 body {
   overflow-x: hidden; /* Prevent scroll on narrow devices */
   overflow-y: visible;
+  height: auto;
 }
 
 body {
   padding-top: 10px;
-  /*background-color: #4E4E4E;*/
 }
 footer {
   padding: 10px 0;
@@ -18,6 +18,10 @@ footer {
 
 .container {
   min-height: 300px;
+
+}
+div.sidebar-offcanvas {
+  width:195px;
 }
 
 /*
@@ -42,7 +46,7 @@ footer {
 
   .row-offcanvas-right
   .sidebar-offcanvas {
-    right: -50%; /* 6 columns */
+    right: -200px; /* 6 columns */
   }
 
   .row-offcanvas-left
@@ -51,7 +55,7 @@ footer {
   }
 
   .row-offcanvas-right.active {
-    right: 50%; /* 6 columns */
+    right: 200px; /* 6 columns */
   }
 
   .row-offcanvas-left.active {
@@ -61,7 +65,7 @@ footer {
   .sidebar-offcanvas {
     position: absolute;
     top: 0;
-    width: 50%; /* 6 columns */
+    width: 195px; /* 6 columns */
   }
 }
 
@@ -89,4 +93,24 @@ tr.data-row > td:first-child{
 }
 tr.data-row > td{
   cursor: pointer;
+}
+
+/*  Success feedback Icon color  */
+span.form-control-feedback.glyphicon-ok {
+  color:#3DD23D;
+}
+
+/*  Error feedback Icon color  */
+span.form-control-feedback.glyphicon-remove {
+  color:#DF1B1B;
+}
+
+/*  Required feedback Icon color  */
+span.form-control-feedback.glyphicon-asterisk {
+  color:#DF1B1B;
+}
+
+/*  Warning feedback Icon color  */
+span.form-control-feedback.glyphicon-warning-sign {
+  color:#FFA603;
 }
