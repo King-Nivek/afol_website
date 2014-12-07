@@ -1,7 +1,7 @@
 <?php
 //  AJAX connection
 require_once '../classes/class.DB.php';
-require_once '../classes/class.TableTools.php';
+//require_once '../classes/class.TableTools.php';
 //  Table record lists
 if(isset($_POST['tableType'])) {
   $db = new DB();
@@ -54,8 +54,8 @@ if(isset($_POST['tableType'])) {
     case 'Lego_ColorPart':
       $fullQuery = "SELECT lcp.part_id,
                            lcp.color_id,
-                           lcp.part_id AS 'Part ID',
-                           lcr.color_name AS 'Color Name',
+                           lcp.part_id       AS 'Part ID',
+                           lcr.color_name    AS 'Color Name',
                            lcp.colorPart_qty AS Quantity
                       FROM Lego_ColorPart lcp 
                         INNER JOIN Lego_Color lcr 
@@ -69,10 +69,10 @@ if(isset($_POST['tableType'])) {
       $fullQuery = "SELECT lsp.set_id,
                            lsp.part_id,
                            lsp.color_id,
-                           lsp.set_id AS 'Set ID',
-                           lst.set_name AS 'Set Name',
-                           lsp.part_id AS 'Part ID',
-                           lcr.color_name AS 'Color Name',
+                           lsp.set_id      AS 'Set ID',
+                           lst.set_name    AS 'Set Name',
+                           lsp.part_id     AS 'Part ID',
+                           lcr.color_name  AS 'Color Name',
                            lsp.setPart_qty AS Quantity
                       FROM Lego_SetPart AS lsp 
                         INNER JOIN Lego_Set AS lst
@@ -82,7 +82,21 @@ if(isset($_POST['tableType'])) {
       $table_name = "Lego Parts for Sets:";
       $num_keys = 3;
       $form_type = "form_setpart.php";
-      break;    
+      break;
+
+      case 'User':
+        $fullQuery = "SELECT user_id,
+                             user_username  AS 'Username',
+                             user_firstName AS 'First Name',
+                             user_lastName  AS 'Last Name',
+                             user_email     AS 'E-Mail',
+                             user_joinDate  AS 'Join Date',
+                             user_privilege AS 'Privileges'
+                        FROM User;";
+        $table_name = "Users Info:";
+        $num_keys = 1;
+        $form_type = "form_user.php";
+        break;   
  
     default:
       # code...
