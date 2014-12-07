@@ -1,6 +1,8 @@
 <?php
 require 'resources/includes/include.global.php';
 
+####  Not in real use yet, has no functionality yet.
+
  /* //check to see if they're logged in
   if(!isset($_SESSION['logged_in'])) {
     header("Location: form_sign-in.php");

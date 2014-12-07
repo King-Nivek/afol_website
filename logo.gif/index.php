@@ -1,5 +1,8 @@
 <?php
-$db = new mysqli('localhost', 'c2230a03', 'c2230a03', 'c2230a03proj');
+////  Simple data collector for saveing data about who comes to my pages.
+//  Give to us by our teacher.
+
+$db = new mysqli('ZZZ', 'ZZZ', 'ZZZ', 'ZZZ');
  
 if (mysqli_connect_errno()) {
  //echo 'Error: Could not connect to the database..';

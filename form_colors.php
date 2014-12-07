@@ -23,6 +23,9 @@ require_once 'resources/php/inputValid.php';
   $toID = "";
   $toUser = null;
 
+  ####  Fields for input
+  #########################
+
   $field_colorID = new FormField();
   $field_colorID->table = 'Lego_Color';
   $field_colorID->field = 'color_id';
@@ -106,38 +109,51 @@ require_once 'resources/php/inputValid.php';
       }
     }
 
-
+    //  Data to be entered into database
     $data = array_merge($field_colorID->get_column_Value(),
                         $field_colorName->get_column_Value());
 
+    //  Check if user is deleting for we do not need valid non key fields to 
+    //    delete.  The key will be checked in the whatToDo function so one 
+    //    can not delete the wrong thing.
     if($submitType === 'delete') {
       whatToDo($submitType, $keys, $data, $originalKeys);
     }
 
+    //  whatToDo if user is adding new or modifying
     if($validInput === 2 && $submitType !== 'delete') {
       whatToDo($submitType, $keys, $data, $originalKeys);
     }
 
+    //  If keys have been passed in from the forms page the we need to use them
+    //    to populate the fields with the correct record.
     if(isset($_POST['keys']) && !empty($_POST['keys'])) {
 
+      //  This is a fancy block to turn my none json string into something that
+      //    can be used by json_decode($var)
       $posted_keys = $_POST['keys'];
       $posted_keys = substr_replace($posted_keys,"}",-2);
       $posted_keys = str_replace("'",'"',$posted_keys);
       $posted_keys = json_decode($posted_keys);
 
+      //  Getting a query from the database.
       $results = $db->select("Lego_Color","*","color_id='$posted_keys->color_id'");
 
+      //  Saving the original keys for later use.
       $originalKeys = array();
       $originalKeys[] = array('field' => 'color_id', 'value' => $results['color_id']);
 
+      //  Making sure we can keep using the original keys.
       $_SESSION['originalKeys'] = serialize($originalKeys);
 
+      //  Setting the fields to the selected values.
       $field_colorID->value = $results['color_id'];
       $field_colorName->value = $results['color_name'];
 
     }
   } else {
-      $formButtons = formAddRecord();
+    //  Means we are adding a new record.
+    $formButtons = formAddRecord();
   }
 
 echo html_header("Color form"),

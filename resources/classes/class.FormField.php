@@ -1,6 +1,23 @@
 <?php
 //  FormField class
+/*
+The Work Horse of the forms.
 
+  - Added a parameter for:
+     - public $table  --  to hold the name of the table it is associated with.
+     - public $field  --  to hold the name of the table column it is associated with.
+     - private $state  --  an array to hold the words the will be used to give feedback to the user, used in conjunction with the has_* functions
+     - private $hasFeedback  --  used in conjunction with the has_* functions to give user feedback.
+
+  - Added lines to the toString function give the user feedback when it is needed.
+
+  - Added function to give different feedback to the user:
+     - has_success
+     - has_error
+     - has_required
+     - has_warning
+*/
+     
 class FormField {
   public $table;
   public $field;

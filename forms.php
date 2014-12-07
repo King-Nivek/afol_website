@@ -101,7 +101,7 @@ $toUser = null;
                                     
                 <div  style="padding-top: 10px;"></div>
 
-                <?php if ($user->privilage === 'A') { ?>
+                <?php if ($user->privilage === 'A') { /* These are Checks to see if user is an admin. */?>
                 <!-- Users -->
                 <div class="btn-group">
                   <button class="btn btn-default" name="tableType" value="User" id="bttn_users" role="button">Users</button>
@@ -219,6 +219,7 @@ $toUser = null;
             // code to run if the request succeeds;
             // the response is passed to the function
             success: function( data ) {
+              //  Putting in the panel and table for the data selected.
               $("#tableRecords").html(data['html']);
               $('#form_type').attr('action', data.form_type.toString());
             },

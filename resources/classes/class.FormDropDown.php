@@ -1,6 +1,7 @@
 <?php
 
 //  FormDropDown class
+//  Very similar to the "class.FormField.php" file.
 
 class FormDropDown {
   public $table;
